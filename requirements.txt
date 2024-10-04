@@ -1,3 +1,4 @@
+faker
 #devops
 black==22.3.0
 click==8.1.3 

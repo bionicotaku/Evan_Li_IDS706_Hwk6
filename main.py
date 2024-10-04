@@ -1,104 +1,58 @@
-"""handles cli commands"""
-import sys
-import argparse
-from mylib.extract import extract
-from mylib.transform_load import load
-from mylib.query import (
-    update_record,
-    delete_record,
-    create_record,
-    general_query,
-    read_data,
-)
+import mylib.CRUD as crud
+import mylib.setup as setup
 
+DB_FILE = './data/mydatabase.db'
 
-def handle_arguments(args):
-    """add action based on inital calls"""
-    parser = argparse.ArgumentParser(description="ETL-Query script")
-    parser.add_argument(
-        "action",
-        choices=[
-            "extract",
-            "transform_load",
-            "update_record",
-            "delete_record",
-            "create_record",
-            "general_query",
-            "read_data",
-        ],
-    )
-    args = parser.parse_args(args[:1])
-    print(args.action)
-    if args.action == "update_record":
-        parser.add_argument("record_id", type=int)
-        parser.add_argument("server")
-        parser.add_argument("seconds_before_next_point", type=int)
-        parser.add_argument("day")
-        parser.add_argument("opponent")
-        parser.add_argument("game_score")
-        parser.add_argument("sets", type=int)
-        parser.add_argument("game")
+def setup_database():
+    # Step 1: Create the database file
+    setup.create_database()
 
-    if args.action == "create_record":
-        parser.add_argument("server")
-        parser.add_argument("seconds_before_next_point", type=int)
-        parser.add_argument("day")
-        parser.add_argument("opponent")
-        parser.add_argument("game_score")
-        parser.add_argument("sets", type=int)
-        parser.add_argument("game")
+    # Step 2: Create or update the database schema
+    setup.run_sql_create_file('./data/create.sql')
 
-    if args.action == "general_query":
-        parser.add_argument("query")
+    # Step 3: Generate sample data
+    setup.run_python_script('./mylib/gen.py')
 
-    if args.action == "delete_record":
-        parser.add_argument("record_id", type=int)
+    # Step 4: Load data into the database
+    setup.run_sql_load_file('./data/load.sql')
 
-    # parse again with ever
-    return parser.parse_args(sys.argv[1:])
+    # Step 5: Delete CSV files
+    setup.delete_csv_files('./data')
 
+    print("\nDatabase setup and created all the example data.")
 
 def main():
-    """handles all the cli commands"""
-    args = handle_arguments(sys.argv[1:])
+    setup_database()
+    
+    db = crud.Database(DB_FILE)
 
-    if args.action == "extract":
-        print("Extracting data...")
-        extract()
-    elif args.action == "transform_load":
-        print("Transforming data...")
-        load()
-    elif args.action == "update_record":
-        update_record(
-            args.record_id,
-            args.server,
-            args.seconds_before_next_point,
-            args.day,
-            args.opponent,
-            args.game_score,
-            args.sets,
-            args.game,
-        )
-    elif args.action == "delete_record":
-        delete_record(args.record_id)
-    elif args.action == "create_record":
-        create_record(
-            args.server,
-            args.seconds_before_next_point,
-            args.day,
-            args.opponent,
-            args.game_score,
-            args.sets,
-            args.game,
-        )
-    elif args.action == "general_query":
-        general_query(args.query)
-    elif args.action == "read_data":
-        data = read_data()
-        print(data)
-    else:
-        print(f"Unknown action: {args.action}")
+    # User CRUD examples on User table
+    user_id = db.create_user("john@example.com", "John", "Doe", "123 Main St", 100)
+    user = db.get_user(user_id)
+    print(f"Created user with ID: {user_id}, Retrieved user: {user}")
 
+    updated = db.update_user(user_id, email="johndoe@example.com", balance=200)
+    user = db.get_user(user_id)
+    print(f"Update user status: {updated}, Retrieved user: {user}")
+
+    deleted = db.delete_user(user_id)
+    user = db.get_user(user_id)
+    print(f"Delete user status: {deleted}, Retrieved user: {user}")
+
+    # Product CRUD examples on Product table
+    product_id = db.create_product("Laptop", "Electronics", 999.99, 10)
+    product = db.get_product(product_id)
+    print(f"Created product with ID: {product_id}, Retrieved product: {product}")
+
+    updated = db.update_product(product_id, price=899.99, stock=15)
+    product = db.get_product(product_id)
+    print(f"Update product: {updated}, Retrieved product: {product}")
+
+    deleted = db.delete_product(product_id)
+    product = db.get_product(product_id)
+    print(f"Delete product: {deleted}, Retrieved product: {product}")
+
+    db.close()
 
 if __name__ == "__main__":
     main()

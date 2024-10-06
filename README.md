@@ -10,8 +10,8 @@ Evan_Li_IDS706_Hwk6/
 │   └── workflows/cicd.yml
 ├── .gitignore
 ├── data/
-│   └── create.sql
-│   └── load.sql
+│   ├── create.sql
+│   ├── load.sql
 │   └── mydatabase.db   -> database
 ├── LICENSE
 ├── main.py
@@ -19,7 +19,7 @@ Evan_Li_IDS706_Hwk6/
 ├── mylib/
 │   ├── gen.py          -> generate sample data
 │   ├── setup.py        -> create database and load data
-│   ├── CRUD.py         -> CRUD operations
+│   └── CRUD.py         -> CRUD operations
 ├── README.md
 ├── requirements.txt
 └── test_main.py

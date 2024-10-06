@@ -43,6 +43,3 @@ run-crud:
 # 	else \
 # 		echo "No changes to commit. Skipping commit and push."; \
 # 	fi
-
-query:
-	python main.py general_query "SELECT * FROM ServeTimesDB WHERE server='Roger Federer';"

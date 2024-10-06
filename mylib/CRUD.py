@@ -22,7 +22,8 @@ class Database:
         self.cursor.execute(sql, (user_id,))
         return self.cursor.fetchone()
 
-    def update_user(self, user_id, email=None, firstname=None, lastname=None, address=None, balance=None):
+    def update_user(self, user_id, email=None, firstname=None,
+                    lastname=None, address=None, balance=None):
         updates = []
         values = []
         if email is not None:
@@ -69,7 +70,8 @@ class Database:
         self.cursor.execute(sql, (product_id,))
         return self.cursor.fetchone()
 
-    def update_product(self, product_id, product_name=None, category=None, price=None, stock=None):
+    def update_product(self, product_id, product_name=None,
+                       category=None, price=None, stock=None):
         updates = []
         values = []
         if product_name is not None:

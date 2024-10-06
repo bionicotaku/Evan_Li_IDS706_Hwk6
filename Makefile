@@ -17,33 +17,32 @@ lint:
 container-lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-refactor: format lint
+# refactor: format lint
 
-deploy:
-	#deploy goes here
+# deploy:
+# 	#deploy goes here
 		
-all: install lint test format deploy
+all: install format lint test
 
-generate_and_push:
-	# Create the markdown file 
-	python test_main.py  # Replace with the actual command to generate the markdown
+database-setup:
+	python ./mylib/setup.py
 
-	# Add, commit, and push the generated files to GitHub
-	@if [ -n "$$(git status --porcelain)" ]; then \
-		git config --local user.email "action@github.com"; \
-		git config --local user.name "GitHub Action"; \
-		git add .; \
-		git commit -m "Add SQL log"; \
-		git push; \
-	else \
-		echo "No changes to commit. Skipping commit and push."; \
-	fi
+run-crud:
+	python main.py
+# generate_and_push:
+# 	# Create the markdown file 
+# 	python test_main.py  # Replace with the actual command to generate the markdown
 
-extract:
-	python main.py extract
-
-transform_load: 
-	python main.py transform_load
+# 	# Add, commit, and push the generated files to GitHub
+# 	@if [ -n "$$(git status --porcelain)" ]; then \
+# 		git config --local user.email "action@github.com"; \
+# 		git config --local user.name "GitHub Action"; \
+# 		git add .; \
+# 		git commit -m "Add SQL log"; \
+# 		git push; \
+# 	else \
+# 		echo "No changes to commit. Skipping commit and push."; \
+# 	fi
 
 query:
 	python main.py general_query "SELECT * FROM ServeTimesDB WHERE server='Roger Federer';"

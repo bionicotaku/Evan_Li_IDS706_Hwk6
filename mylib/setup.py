@@ -19,7 +19,8 @@ def run_sql_create_file(file_path):
 def run_sql_load_file(file_path):
     try:
         command = f"sqlite3 {DB_FILE} < {file_path}"
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        result = subprocess.run(command, shell=True,
+                                capture_output=True, text=True, check=True)
         print(result.stdout)
         
     except subprocess.CalledProcessError as e:
@@ -63,3 +64,24 @@ def create_database():
             exit(1)
     else:
         print(f"Database file {DB_FILE} already exists")
+
+def setup_database():
+    # Step 1: Create the database file
+    create_database()
+
+    # Step 2: Create or update the database schema
+    run_sql_create_file("./data/create.sql")
+
+    # Step 3: Generate sample data
+    run_python_script("./mylib/gen.py")
+
+    # Step 4: Load data into the database
+    run_sql_load_file("./data/load.sql")
+
+    # Step 5: Delete CSV files
+    delete_csv_files("./data")
+
+    print("\nDatabase setup and created all the example data.")
+    
+if __name__ == "__main__":
+    setup_database()

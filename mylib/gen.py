@@ -1,6 +1,5 @@
 import csv
 from faker import Faker
-from decimal import Decimal
 import random
 
 # Set up Faker
@@ -33,7 +32,8 @@ def gen_users(num_users):
         print(f'{num_users} generated')
 
 def gen_products(num_products):
-    categories = ['Electronics', 'Books', 'Clothing', 'Household', 'Toys', 'Food', 'Sports']
+    categories = ['Electronics', 'Books', 'Clothing', 
+                  'Household', 'Toys', 'Food', 'Sports']
     with open('./data/products.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Generating Products...', end=' ', flush=True)
@@ -57,7 +57,8 @@ def gen_orders(num_orders, num_users, num_products):
             user_id = random.randint(1, num_users)
             product_id = random.randint(1, num_products)
             quantity = random.randint(1, 10)
-            order_date = fake.date_time_between(start_date='-1y', end_date='now').strftime('%Y-%m-%d %H:%M:%S')
+            order_date_temp = fake.date_time_between(start_date='-1y', end_date='now')
+            order_date = order_date_temp.strftime('%Y-%m-%d %H:%M:%S')
             writer.writerow([oid + 1, user_id, product_id, quantity, order_date])
         print(f'{num_orders} generated')
 

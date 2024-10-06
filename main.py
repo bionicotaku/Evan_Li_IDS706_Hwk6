@@ -3,26 +3,8 @@ import mylib.setup as setup
 
 DB_FILE = './data/mydatabase.db'
 
-def setup_database():
-    # Step 1: Create the database file
-    setup.create_database()
-
-    # Step 2: Create or update the database schema
-    setup.run_sql_create_file('./data/create.sql')
-
-    # Step 3: Generate sample data
-    setup.run_python_script('./mylib/gen.py')
-
-    # Step 4: Load data into the database
-    setup.run_sql_load_file('./data/load.sql')
-
-    # Step 5: Delete CSV files
-    setup.delete_csv_files('./data')
-
-    print("\nDatabase setup and created all the example data.")
-
 def main():
-    setup_database()
+    setup.setup_database()
     
     db = crud.Database(DB_FILE)
 
